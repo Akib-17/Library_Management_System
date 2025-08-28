@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Library Management System</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+        /* Additional styles for the new interface */
+            /* Fix for book cover images to ensure they fit properly */
+        .book-cover {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 5px 5px 0 0;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .book-card {
+            display: flex;
+            flex-direction: column;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            background-color: #fff;
+            height: 100%;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .book-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .book-info h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .loading {
+            padding: 20px;
+            text-align: center;
+            font-style: italic;
+            color: #666;
+        }
+        .login-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-login, .btn-signup {
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login {
+            background-color: #3498db;
+            color: white;
+            border: 1px solid #2980b9;
+        }
+        
+        .btn-signup {
+            background-color: #2ecc71;
+            color: white;
+            border: 1px solid #27ae60;
+        }
+        
+        .btn-login:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-signup:hover {
+            background-color: #27ae60;
+        }
+        
+        .welcome-user {
+            margin-right: 15px;
+            font-weight: 500;
+        }
+        
+        .btn-logout {
+            padding: 8px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid #c0392b;
+            cursor: pointer;
+        }
+        
+        .btn-logout:hover {
+            background-color: #c0392b;
+        }
+        
+        .logout-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            animation: fadeInOut 3s ease-in-out;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; top: 0; }
+            10% { opacity: 1; top: 20px; }
+            90% { opacity: 1; top: 20px; }
+            100% { opacity: 0; top: 0; }
+        }
+            /* Advanced Search Styling */
+    .btn-advanced {
+        background-color: #f39c12;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        margin-left: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-advanced:hover {
+        background-color: #e67e22;
+    }
+    
+    .advanced-search-panel {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 15px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .advanced-search-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    @media (min-width: 768px) {
+        .advanced-search-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    .search-filter {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .search-filter label {
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+    
+    .search-filter select,
+    .search-filter input {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .availability-options {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+    
+    .checkbox-label {
+        margin-left: 5px;
+    }
+    
+    .advanced-search-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+        gap: 10px;
+    }
+    
+    .btn-reset {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-search {
+        background-color: #2ecc71;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-reset:hover {
+        background-color: #5a6268;
+    }
+    
+    .btn-search:hover {
+        background-color: #27ae60;
+    }
+    
+    /* Search Results Section */
+    .search-results-section {
+        padding: 40px 0;
+    }
+    
+    .search-filters-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .filter-tag {
+        background-color: #e9f7ef;
+        color: #27ae60;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .filter-tag .remove-filter {
+        margin-left: 5px;
+        cursor: pointer;
+        color: #e74c3c;
+    }
+    
+    #no-results-message {
+        text-align: center;
+        padding: 30px 0;
+        color: #7f8c8d;
+    }
+    
+    #search-count {
+        font-weight: normal;
+        font-size: 0.9rem;
+        color: #7f8c8d;
+    }
+    /* Book Details Modal Styles */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 50px auto;
+        padding: 25px;
+        width: 80%;
+        max-width: 900px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        position: relative;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 28px;
+        cursor: pointer;
+        color: #666;
+    }
+
+    .close-modal:hover {
+        color: #000;
+    }
+
+    .book-details-header {
+        display: flex;
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .book-cover-large {
+        width: 200px;
+        height: 300px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        flex-shrink: 0;
+    }
+
+    .book-info-large {
+        flex-grow: 1;
+    }
+
+    .book-info-large h2 {
+        font-size: 24px;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .book-author, .book-isbn, .book-category, .book-year, .book-shelf {
+        margin: 8px 0;
+        color: #555;
+    }
+
+    .book-description {
+        margin: 25px 0;
+        line-height: 1.6;
+    }
+
+    .book-stats {
+        display: flex;
+        justify-content: space-around;
+        margin: 30px 0;
+        text-align: center;
+    }
+
+    .stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #3498db;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: #777;
+    }
+
+    .book-action {
+        text-align: center;
+        margin: 25px 0;
+    }
+
+    .btn-primary {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #2980b9;
+    }
+
+    .btn-primary:disabled {
+        background-color: #95a5a6;
+        cursor: not-allowed;
+    }
+
+    .book-reviews {
+        margin-top: 30px;
+    }
+
+    .review {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .review:last-child {
+        border-bottom: none;
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .reviewer-name {
+        font-weight: bold;
+    }
+
+    .review-date {
+        color: #777;
+        font-size: 0.9rem;
+    }
+
+    .review-rating {
+        color: #f39c12;
+        margin-bottom: 8px;
+    }
+
+    .review-text {
+        line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+        .book-details-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .modal-content {
+            width: 95%;
+            padding: 15px;
+            margin: 20px auto;
+        }
+        
+        .book-cover-large {
+            margin-bottom: 15px;
+        }
+    }
+    .reservation-success {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #e9f7ef;
+    border-left: 4px solid #2ecc71;
+    border-radius: 4px;
+}
+
+    .reservation-success p {
+        margin: 5px 0;
+    }
+
+    .reservation-success a {
+        color: #3498db;
+        text-decoration: underline;
+    }
+    .checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+    color: #333; /* Ensure text color is visible */
+}
+
+.checkbox-label {
+    margin-left: 8px;
+    font-size: 14px;
+    color: #333; /* Explicitly set text color */
+    display: inline-block; /* Ensure the span is displayed */
+}
+
+.availability-options {
+    display: flex;
+    flex-direction: column; /* Stack options vertically for better visibility */
+    gap: 10px;
+    margin-top: 5px;
+}
+
+/* Make radio buttons more visible */
+.checkbox-container input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    visibility: visible;
+    opacity: 1;
+}
+    </style>
+    </head>
+    <body>
+        <!-- <div id="debug"
+            style="padding: 10px; background: #f7f7f7; border: 1px solid #ddd; margin: 10px;">
+            <h4>Debug Info</h4>
+            <button onclick="testPopularBooks()">Test Popular Books API</button>
+            <pre id="api-response"
+                style="max-height: 200px; overflow: auto;"></pre>
+        </div>
+        <script>
+        function testPopularBooks() {
+            document.getElementById('api-response').textContent = 'Loading...';
+            fetch('../Backend/user/popular_books.php')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('api-response').textContent = data;
+                })
+                .catch(error => {
+                    document.getElementById('api-response').textContent = 'Error: ' + error;
+                });
+        }
+        </script> -->
+        <!-- Book Details Modal -->
+        <div id="book-details-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="book-details-container">
+                    <div class="book-details-header">
+                        <div class="book-cover-large"
+                            id="modal-book-cover"></div>
+                        <div class="book-info-large">
+                            <h2 id="modal-book-title"></h2>
+                            <p class="book-author">By <span
+                                    id="modal-book-author"></span></p>
+                            <p class="book-isbn">ISBN: <span
+                                    id="modal-book-isbn"></span></p>
+                            <p class="book-category">Category: <span
+                                    id="modal-book-category"></span></p>
+                            <p class="book-year">Published: <span
+                                    id="modal-book-year"></span></p>
+                            <p class="book-availability"
+                                id="modal-book-availability"></p>
+                            <p class="book-shelf">Shelf: <span
+                                    id="modal-book-shelf"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="book-description">
+                        <h3>Book Description</h3>
+                        <p id="modal-book-description"></p>
+                    </div>
+
+                    <div class="book-stats">
+                        <div class="stat">
+                            <span class="stat-value"
+                                id="modal-book-rating">4.5</span>
+                            <span class="stat-label">Rating</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value"
+                                id="modal-book-reviews-count">12</span>
+                            <span class="stat-label">Reviews</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value"
+                                id="modal-book-copies"></span>
+                            <span class="stat-label">Copies</span>
+                        </div>
+                    </div>
+
+                    <div class="book-action">
+                        <button id="reserve-book-btn"
+                            class="btn btn-primary">Reserve Book</button>
+                    </div>
+
+                    <div class="book-reviews">
+                        <h3>Reviews</h3>
+                        <div id="book-reviews-list">
+                            <!-- Reviews will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <header>
+            <div class="container">
+                <div class="logo">
+                    <h1><i class="fas fa-book"></i>XYZ Library</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html" class="active">Home</a></li>
+                        <li><a href="#">Books</a></li>
+                        <li id="members-nav" style="display:none;"><a
+                                href="#">Members</a></li>
+                        <li id="issues-nav" style="display:none;"><a
+                                href="#">Issues</a></li>
+                        <li id="reports-nav" style="display:none;"><a
+                                href="#">Reports</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu" id="user-greeting">
+                    <!-- Dynamic content will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2 id="welcome-message">Welcome to Library Management
+                        System</h2>
+                    <p>An efficient way to manage books, members, and borrowing
+                        records</p>
+                    <div class="search-box">
+                        <input type="text" id="simple-search"
+                            placeholder="Search for books, authors, categories...">
+                        <button id="simple-search-btn"><i
+                                class="fas fa-search"></i> Search</button>
+                        <button id="advanced-search-toggle"
+                            class="btn-advanced">Advanced Search</button>
+                    </div>
+
+                    <!-- Advanced Search Panel - Initially Hidden -->
+                    <div id="advanced-search-panel"
+                        class="advanced-search-panel" style="display: none;">
+                        <form id="advanced-search-form">
+                            <div class="advanced-search-grid">
+                                <div class="search-filter">
+                                    <label for="filter-title">Title</label>
+                                    <input type="text" id="filter-title"
+                                        name="title"
+                                        placeholder="Book title...">
+                                </div>
+                                <div class="search-filter">
+                                    <label for="filter-author">Author</label>
+                                    <input type="text" id="filter-author"
+                                        name="author"
+                                        placeholder="Author name...">
+                                </div>
+                                <div class="search-filter">
+                                    <label
+                                        for="filter-category">Category</label>
+                                    <select id="filter-category"
+                                        name="category">
+                                        <option value>All Categories</option>
+                                        <!-- Categories will be populated by JavaScript -->
+                                    </select>
+                                </div>
+                                <div class="search-filter">
+                                    <label for="filter-year">Publication
+                                        Year</label>
+                                    <select id="filter-year" name="year">
+                                        <option value>Any Year</option>
+                                        <!-- Years will be populated by JavaScript -->
+                                    </select>
+                                </div>
+                                <div class="search-filter">
+                                    <label for="filter-isbn">ISBN</label>
+                                    <input type="text" id="filter-isbn"
+                                        name="isbn" placeholder="ISBN...">
+                                </div>
+                                <div class="search-filter">
+                                    <label>Availability</label>
+                                    <div class="availability-options">
+                                        <label class="checkbox-container">
+                                            <input type="radio"
+                                                name="availability" value="all"
+                                                checked>
+                                            <span
+                                                class="checkbox-label">All</span>
+                                        </label>
+                                        <label class="checkbox-container">
+                                            <input type="radio"
+                                                name="availability"
+                                                value="available">
+                                            <span
+                                                class="checkbox-label">Available</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="advanced-search-actions">
+                                <button type="reset"
+                                    class="btn-reset">Reset</button>
+                                <button type="submit"
+                                    class="btn-search">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Add this new section after your hero section to show search results -->
+        <section id="search-results-section" class="search-results-section"
+            style="display: none;">
+            <div class="container">
+                <h2 class="section-title">Search Results <span
+                        id="search-count"></span></h2>
+                <div id="search-filters-summary"
+                    class="search-filters-summary"></div>
+                <div class="book-grid" id="search-results"></div>
+                <div id="no-results-message" style="display: none;">
+                    <p>No books found matching your search criteria. Please try
+                        different search terms.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card" id="book-feature">
+                        <a href="./Admin/book_management.php">
+                            <div class="feature-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h3>Book Management</h3>
+                            <p>Add, update, and track all books in your library
+                                inventory</p>
+                        </a>
+                    </div>
+                    <div class="feature-card" id="member-feature"
+                        style="display:none;">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Member Management</h3>
+                        <p>Manage member registrations and maintain member
+                            profiles</p>
+                    </div>
+                    <div class="feature-card" id="issue-feature">
+                        <a href="./Admin/issue_return.php">
+                            <div class="feature-icon">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <h3>Issue & Return</h3>
+                            <p>Efficiently handle book issuing and return
+                                processes</p>
+                        </a>
+                    </div>
+                    <div class="feature-card" id="reports-feature"
+                        style="display:none;">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3>Reports & Analytics</h3>
+                        <p>Generate reports and analyze library usage
+                            statistics</p>
+                    </div>
+                    <div class="feature-card">
+                        <a href="user/feedback.html">
+                            <div class="feature-icon">
+                                <i class="fas fa-comment-dots"></i>
+                            </div>
+                            <h3>Feedback & Support</h3>
+                            <p>Submit your feedback or get help with any
+                                issues</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Replace the static book grid with this dynamic PHP version -->
+        <section class="recent-books">
+            <div class="container">
+                <h2 class="section-title">Books You Might Like</h2>
+                <div class="book-grid" id="recommended-books">
+                    <!-- Books will be populated dynamically by JavaScript -->
+                </div>
+                <div class="view-more">
+                    <a href="#" class="btn">View All Books</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">5,320</div>
+                        <div class="stat-title">Total Books</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">2,150</div>
+                        <div class="stat-title">Active Members</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">320</div>
+                        <div class="stat-title">Books Issued</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">15</div>
+                        <div class="stat-title">Categories</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <h2><i class="fas fa-book"></i>ABC Library</h2>
+                        <p>"Today a reader, tomorrow a leader." - Margaret
+                            Fuller</p>
+                    </div>
+                    <div class="footer-links">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="user/feedback.html">Feedback</a></li>
+                            <li id="staff-login-footer"><a
+                                    href="admin/login.html">Admin Login</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-contact">
+                        <h3>Contact Us</h3>
+                        <p><i class="fas fa-envelope"></i>
+                            abc_info@librarysystem.com</p>
+                        <p><i class="fas fa-phone"></i> +88 01* **** ****</p>
+                        <p><i class="fas fa-map-marker-alt"></i> abc Library
+                            Street, Dhaka</p>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Library Management System. All rights
+                        reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+        // Check for logout parameter in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const isLogout = urlParams.has('logout');
+        
+        // Check if user is logged in
+        let user = JSON.parse(localStorage.getItem('libraryUser')) || null;
+        console.log('User data:', user);
+        
+        function updateUI() {
+            const userGreeting = document.getElementById('user-greeting');
+            const welcomeMessage = document.getElementById('welcome-message');
+            const membersNav = document.getElementById('members-nav');
+            const issuesNav = document.getElementById('issues-nav');
+            const reportsNav = document.getElementById('reports-nav');
+            const memberFeature = document.getElementById('member-feature');
+            const reportsFeature = document.getElementById('reports-feature');
+            const bookFeature = document.getElementById('book-feature');
+            const issueFeature = document.getElementById('issue-feature');
+            const staffLoginFooter = document.getElementById('staff-login-footer');
+            
+            if (user) {
+                // User is logged in
+                welcomeMessage.textContent = `Welcome back, ${user.name}!`;
+                
+                userGreeting.innerHTML = `
+                    <span class="welcome-user">Hello, ${user.name}</span>
+                    <button onclick="handleLogout()" class="btn-logout">Logout</button>
+                `;
+                
+                if (user.role === 'admin') {
+                    // Admin-specific features
+                    membersNav.style.display = 'block';
+                    issuesNav.style.display = 'block';
+                    reportsNav.style.display = 'block';
+                    memberFeature.style.display = 'block';
+                    reportsFeature.style.display = 'block';
+                    bookFeature.style.display = 'block';
+                    issueFeature.style.display = 'block';
+                    staffLoginFooter.style.display = 'none';
+                        // Hide the regular feedback card for admin users
+                    const feedbackCard = document.querySelector('.feature-card a[href="user/feedback.html"]').closest('.feature-card');
+                    feedbackCard.style.display = 'none';
+                    // Add a new Feedback Management feature card for admins only
+                    const feedbackFeature = document.createElement('div');
+                    feedbackFeature.className = 'feature-card';
+                    feedbackFeature.innerHTML = `
+                        <a href="./Admin/feedback_management.php">
+                            <div class="feature-icon">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                            <h3>Ticket Management</h3>
+                            <p>Manage user feedback and support tickets</p>
+                        </a>
+                    `;
+                    
+                    // Insert the new card into the feature grid
+                    document.querySelector('.feature-grid').appendChild(feedbackFeature);
+                } else {
+                    // Regular user
+                    membersNav.style.display = 'none';
+                    issuesNav.style.display = 'none';
+                    reportsNav.style.display = 'none';
+                    memberFeature.style.display = 'none';
+                    reportsFeature.style.display = 'none';
+                    
+                    // Change what the book feature shows for regular users
+                    bookFeature.innerHTML = `
+                        <a href="./user/reservation_status.php">
+                            <div class="feature-icon">
+                                <i class="fas fa-bookmark"></i>
+                            </div>
+                            <h3>Book Reservation Status</h3>
+                            <p>View and manage your current book reservations</p>
+                        </a>
+                    `;
+                    
+                    // Change what the issue feature shows for regular users
+                    issueFeature.innerHTML = `
+                        <a href="./user/borrowing_history.php">
+                            <div class="feature-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <h3>Borrowing History</h3>
+                            <p>View your past and current borrowed books</p>
+                        </a>
+                    `;
+                    
+                    bookFeature.style.display = 'block';
+                    issueFeature.style.display = 'block';
+                    staffLoginFooter.style.display = 'block';
+                }
+            } else {
+                // No user logged in - default view
+                welcomeMessage.textContent = 'Welcome to Library Management System';
+                
+                userGreeting.innerHTML = `
+                    <div class="login-options">
+                        <a href="user/login.html" class="btn-login">User Login</a>
+                        <a href="admin/login.html" class="btn-signup">Admin Login</a>
+                    </div>
+                `;
+                
+                // Hide privileged elements
+                membersNav.style.display = 'none';
+                issuesNav.style.display = 'none';
+                reportsNav.style.display = 'none';
+                memberFeature.style.display = 'none';
+                reportsFeature.style.display = 'none';
+                bookFeature.style.display = 'block';
+                issueFeature.style.display = 'block';
+                staffLoginFooter.style.display = 'block';
+            }
+            
+            // Show logout message if applicable
+            if (isLogout) {
+                showLogoutMessage();
+                // Remove the logout parameter from URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+        
+        function handleLogout() {
+            // Clear user data
+            localStorage.removeItem('libraryUser');
+            // Redirect to index.html
+            window.location.href = 'index.html?logout=true';
+        }
+        
+        function showLogoutMessage() {
+            const message = document.createElement('div');
+            message.className = 'logout-message';
+            message.textContent = 'You have been successfully logged out.';
+            document.body.prepend(message);
+            setTimeout(() => message.remove(), 3000);
+        }
+        
+
+
+    function loadRecommendedBooks() {
+    // Get a direct reference to the book grid
+        const bookGrid = document.getElementById('recommended-books');
+        
+        // Show loading state
+        bookGrid.innerHTML = '<div class="loading">Loading recommendations...</div>';
+        
+        // We know this path works from your test button
+        fetch('../Backend/user/popular_books.php')
+            .then(response => response.text())
+            .then(data => {
+                try {
+                    // Parse the JSON response
+                    const responseData = JSON.parse(data);
+                    
+                    if (responseData.success && responseData.books && responseData.books.length > 0) {
+                        // Display the books from the response
+                        displayRecommendedBooks(responseData.books);
+                    } else {
+                        // If no books in response, show defaults
+                        console.log('No books found in response, showing defaults');
+                        displayDefaultBooks();
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    console.log('Response data:', data);
+                    displayDefaultBooks();
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                displayDefaultBooks();
+            });
+    }
+
+        // Function to display recommended books in the book grid
+function displayRecommendedBooks(books) {
+    const bookGrid = document.getElementById('recommended-books');
+    bookGrid.innerHTML = '';
+
+    if (books.length === 0) {
+        displayDefaultBooks();
+        return;
+    }
+
+    // Display up to 4 recommended books
+    books.slice(0, 4).forEach(book => {
+        const statusClass = book.available_copies > 0 ? 'available' : 'issued';
+        const statusText = book.available_copies > 0 ? 'Available' : 'Issued';
+        
+        // Handle cover image with fallbacks and error handling
+        let coverUrl = 'https://via.placeholder.com/150x200?text=No+Cover';
+        if (book.cover_image && book.cover_image.trim() !== '') {
+            coverUrl = book.cover_image;
+        }
+
+        bookGrid.innerHTML += `
+            <div class="book-card" data-id="${book.book_id}">
+                <div class="book-cover" style="background-image: url('${coverUrl}')"></div>
+                <div class="book-info">
+                    <h3>${book.title}</h3>
+                    <p class="author">${book.author}</p>
+                    <p class="status ${statusClass}">${statusText}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    // Add error handling for images
+    document.querySelectorAll('.book-cover').forEach(cover => {
+        const bgImg = getComputedStyle(cover).backgroundImage;
+        if (bgImg.includes('url(')) {
+            const url = bgImg.slice(5, -2).replace(/["']/g, '');
+            const img = new Image();
+            img.onerror = () => {
+                cover.style.backgroundImage = "url('https://via.placeholder.com/150x200?text=No+Cover')";
+            };
+            img.src = url;
+        }
+    });
+}
+
+    // Function to display default books if no recommendations are available
+        function displayDefaultBooks() {
+            const bookGrid = document.getElementById('recommended-books');
+            bookGrid.innerHTML = `
+                <div class="book-card">
+                    <div class="book-cover"></div>
+                    <div class="book-info">
+                        <h3>The Great Gatsby</h3>
+                        <p class="author">F. Scott Fitzgerald</p>
+                        <p class="status available">Available</p>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover"></div>
+                    <div class="book-info">
+                        <h3>To Kill a Mockingbird</h3>
+                        <p class="author">Harper Lee</p>
+                        <p class="status available">Available</p>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover"></div>
+                    <div class="book-info">
+                        <h3>1984</h3>
+                        <p class="author">George Orwell</p>
+                        <p class="status issued">Issued</p>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover"></div>
+                    <div class="book-info">
+                        <h3>Pride and Prejudice</h3>
+                        <p class="author">Jane Austen</p>
+                        <p class="status available">Available</p>
+                    </div>
+                </div>
+            `;
+        }
+    // Advanced search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle advanced search panel
+    const advancedSearchToggle = document.getElementById('advanced-search-toggle');
+    const advancedSearchPanel = document.getElementById('advanced-search-panel');
+    
+    advancedSearchToggle.addEventListener('click', function() {
+        if (advancedSearchPanel.style.display === 'none') {
+            advancedSearchPanel.style.display = 'block';
+            advancedSearchToggle.textContent = 'Simple Search';
+        } else {
+            advancedSearchPanel.style.display = 'none';
+            advancedSearchToggle.textContent = 'Advanced Search';
+        }
+    });
+    
+    // Load categories for dropdown
+    loadCategories();
+    
+    // Load publication years for dropdown
+    loadPublicationYears();
+    
+    // Handle simple search
+    const simpleSearchBtn = document.getElementById('simple-search-btn');
+    simpleSearchBtn.addEventListener('click', function() {
+        const searchTerm = document.getElementById('simple-search').value.trim();
+        if (searchTerm) {
+            performSearch({ query: searchTerm });
+        }
+    });
+    
+    // Handle advanced search form submission
+    const advancedSearchForm = document.getElementById('advanced-search-form');
+    advancedSearchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const filters = {
+            title: document.getElementById('filter-title').value.trim(),
+            author: document.getElementById('filter-author').value.trim(),
+            category: document.getElementById('filter-category').value,
+            year: document.getElementById('filter-year').value,
+            isbn: document.getElementById('filter-isbn').value.trim(),
+            availability: document.querySelector('input[name="availability"]:checked').value
+        };
+        
+        performSearch(filters);
+    });
+});
+
+// Function to load categories for the dropdown
+function loadCategories() {
+    fetch('../Backend/user/get_categories.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const categorySelect = document.getElementById('filter-category');
+                data.categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.category_id;
+                    option.textContent = category.name;
+                    categorySelect.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error loading categories:', error);
+        });
+}
+
+// Function to load publication years for the dropdown
+function loadPublicationYears() {
+    const yearSelect = document.getElementById('filter-year');
+    const currentYear = new Date().getFullYear();
+    
+    // Add last 100 years to the dropdown
+    for (let year = currentYear; year >= currentYear - 100; year--) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+    }
+}
+
+// Function to perform search with filters
+function performSearch(filters) {
+    // Show loading state
+    const searchResults = document.getElementById('search-results');
+    searchResults.innerHTML = '<div class="loading">Searching books...</div>';
+    
+    // Show search results section
+    document.getElementById('search-results-section').style.display = 'block';
+    document.getElementById('no-results-message').style.display = 'none';
+    
+    // Construct the query parameters
+    const params = new URLSearchParams();
+    
+    // Add filters to query params
+    Object.keys(filters).forEach(key => {
+        if (filters[key]) {
+            params.append(key, filters[key]);
+        }
+    });
+    
+    // Make API call to search endpoint
+    fetch('../Backend/user/advanced_search.php?' + params.toString())
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.books && data.books.length > 0) {
+                displaySearchResults(data.books);
+                updateFiltersSummary(filters);
+                document.getElementById('search-count').textContent = `(${data.books.length} books found)`;
+            } else {
+                searchResults.innerHTML = '';
+                document.getElementById('no-results-message').style.display = 'block';
+                document.getElementById('search-count').textContent = '(0 books found)';
+            }
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+            searchResults.innerHTML = '<div class="error-message">An error occurred during search. Please try again.</div>';
+        });
+}
+
+// Function to display search results
+function displaySearchResults(books) {
+    const searchResults = document.getElementById('search-results');
+    searchResults.innerHTML = '';
+    
+    books.forEach(book => {
+        const statusClass = book.available_copies > 0 ? 'available' : 'issued';
+        const statusText = book.available_copies > 0 ? 'Available' : 'Issued';
+        
+        // Handle cover image with fallbacks
+        let coverUrl = 'https://via.placeholder.com/150x200?text=No+Cover';
+        if (book.cover_image && book.cover_image.trim() !== '') {
+            coverUrl = book.cover_image;
+        }
+        
+        searchResults.innerHTML += `
+            <div class="book-card" data-id="${book.book_id}">
+                <div class="book-cover" style="background-image: url('${coverUrl}')"></div>
+                <div class="book-info">
+                    <h3>${book.title}</h3>
+                    <p class="author">${book.author}</p>
+                    <p class="category">${book.category_name || ''}</p>
+                    <p class="year">${book.publication_year || 'Year not specified'}</p>
+                    <p class="status ${statusClass}">${statusText}</p>
+                </div>
+            </div>
+        `;
+    });
+}
+
+// Function to update the filters summary
+function updateFiltersSummary(filters) {
+    const filtersContainer = document.getElementById('search-filters-summary');
+    filtersContainer.innerHTML = '';
+    
+    // Create filter tags for non-empty filters
+    Object.keys(filters).forEach(key => {
+        if (filters[key] && key !== 'query') {
+            let label, value;
+            
+            switch (key) {
+                case 'title':
+                    label = 'Title';
+                    value = filters[key];
+                    break;
+                case 'author':
+                    label = 'Author';
+                    value = filters[key];
+                    break;
+                case 'category':
+                    label = 'Category';
+                    value = document.querySelector(`#filter-category option[value="${filters[key]}"]`)?.textContent;
+                    break;
+                case 'year':
+                    label = 'Year';
+                    value = filters[key];
+                    break;
+                case 'isbn':
+                    label = 'ISBN';
+                    value = filters[key];
+                    break;
+                case 'availability':
+                    if (filters[key] === 'available') {
+                        label = 'Availability';
+                        value = 'Available Only';
+                    }
+                    break;
+                default:
+                    return;
+            }
+            
+            if (value) {
+                filtersContainer.innerHTML += `
+                    <div class="filter-tag" data-filter="${key}">
+                        ${label}: ${value}
+                        <span class="remove-filter" onclick="removeFilter('${key}')">&times;</span>
+                    </div>
+                `;
+            }
+        } else if (key === 'query' && filters[key]) {
+            filtersContainer.innerHTML += `
+                <div class="filter-tag" data-filter="query">
+                    Search: ${filters[key]}
+                    <span class="remove-filter" onclick="removeFilter('query')">&times;</span>
+                </div>
+            `;
+        }
+    });
+}
+
+// Function to remove a filter and re-run the search
+function removeFilter(filterKey) {
+    if (filterKey === 'query') {
+        document.getElementById('simple-search').value = '';
+        performSearch({});
+    } else {
+        // Clear the specific filter
+        switch (filterKey) {
+            case 'title':
+                document.getElementById('filter-title').value = '';
+                break;
+            case 'author':
+                document.getElementById('filter-author').value = '';
+                break;
+            case 'category':
+                document.getElementById('filter-category').value = '';
+                break;
+            case 'year':
+                document.getElementById('filter-year').value = '';
+                break;
+            case 'isbn':
+                document.getElementById('filter-isbn').value = '';
+                break;
+            case 'availability':
+                document.querySelector('input[name="availability"][value="all"]').checked = true;
+                break;
+        }
+        
+        // Re-run search with updated filters
+        const filters = {
+            title: document.getElementById('filter-title').value.trim(),
+            author: document.getElementById('filter-author').value.trim(),
+            category: document.getElementById('filter-category').value,
+            year: document.getElementById('filter-year').value,
+            isbn: document.getElementById('filter-isbn').value.trim(),
+            availability: document.querySelector('input[name="availability"]:checked').value
+        };
+        
+        performSearch(filters);
+    }
+}
+
+    // Make all book cards clickable to show details modal
+// Replace the existing book card click handler with this updated version
+// Replace the existing book card click handler with this updated version
+document.addEventListener('click', function(event) {
+    // Find closest book-card parent element if clicked on a child element
+    const bookCard = event.target.closest('.book-card');
+    
+    if (bookCard) {
+        // Get book ID from the card
+        const bookId = bookCard.dataset.id;
+        
+        if (!bookId) {
+            console.error("No book ID found on this card");
+            return;
+        }
+        
+        // Show loading state in modal
+        const modal = document.getElementById('book-details-modal');
+        modal.querySelector('.book-details-container').innerHTML = '<div class="loading">Loading book details...</div>';
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Prevent body scrolling
+        
+        // Get current user for reservation status check
+        const user = JSON.parse(localStorage.getItem('libraryUser'));
+        
+        // Construct the URL with user ID if available
+        let url = `../Backend/user/get_book_details.php?book_id=${bookId}`;
+        if (user && user.id) {
+            url += `&user_id=${user.id}`;
+        }
+        
+        // Fetch book details from server
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success && data.book) {
+                    // Reset the container to its original structure
+                    modal.querySelector('.book-details-container').innerHTML = `
+                        <div class="book-details-header">
+                            <div class="book-cover-large" id="modal-book-cover"></div>
+                            <div class="book-info-large">
+                                <h2 id="modal-book-title"></h2>
+                                <p class="book-author">By <span id="modal-book-author"></span></p>
+                                <p class="book-isbn">ISBN: <span id="modal-book-isbn"></span></p>
+                                <p class="book-category">Category: <span id="modal-book-category"></span></p>
+                                <p class="book-year">Published: <span id="modal-book-year"></span></p>
+                                <p class="book-availability" id="modal-book-availability"></p>
+                                <p class="book-shelf">Shelf: <span id="modal-book-shelf"></span></p>
+                            </div>
+                        </div>
+
+                        <div class="book-description">
+                            <h3>Book Description</h3>
+                            <p id="modal-book-description"></p>
+                        </div>
+
+                        <div class="book-stats">
+                            <div class="stat">
+                                <span class="stat-value" id="modal-book-rating">4.5</span>
+                                <span class="stat-label">Rating</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="modal-book-reviews-count">12</span>
+                                <span class="stat-label">Reviews</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="modal-book-copies"></span>
+                                <span class="stat-label">Copies</span>
+                            </div>
+                        </div>
+
+                        <div class="book-action">
+                            <button id="reserve-book-btn" class="btn btn-primary">Reserve Book</button>
+                        </div>
+
+                        <div class="book-reviews">
+                            <h3>Reviews</h3>
+                            <div id="book-reviews-list">
+                                <!-- Reviews will be populated here -->
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Now populate with data
+                    showBookDetails(data.book);
+                } else {
+                    throw new Error(data.message || 'Failed to load book details');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching book details:', error);
+                modal.querySelector('.book-details-container').innerHTML = `
+                    <div class="error-message" style="padding: 20px; text-align: center;">
+                        <i class="fas fa-exclamation-circle" style="font-size: 2rem; color: #e74c3c; margin-bottom: 10px;"></i>
+                        <p>Sorry, we couldn't load the book details.</p>
+                        <p>Error: ${error.message}</p>
+                        <button onclick="closeBookModal()" class="btn btn-primary" style="margin-top: 15px;">Close</button>
+                    </div>
+                `;
+            });
+    }
+});
+
+// Close the modal when clicking the X button or outside the modal content
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('book-details-modal');
+    if (event.target.classList.contains('close-modal') || event.target === modal) {
+        closeBookModal();
+    }
+});
+
+// Close modal when pressing Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeBookModal();
+    }
+});
+
+// Function to show book details in modal
+function showBookDetails(book) {
+    const modal = document.getElementById('book-details-modal');
+    
+    // Basic book details
+    modal.dataset.bookId = book.book_id;
+    document.getElementById('modal-book-title').textContent = book.title;
+    document.getElementById('modal-book-author').textContent = book.author;
+    document.getElementById('modal-book-isbn').textContent = book.isbn || 'Not available';
+    document.getElementById('modal-book-category').textContent = book.category_name || 'Uncategorized';
+    document.getElementById('modal-book-year').textContent = book.publication_year || 'Not specified';
+    
+    // Cover image with fallback
+    const coverUrl = book.cover_image && book.cover_image.trim() !== '' 
+        ? book.cover_image 
+        : 'https://via.placeholder.com/200x300?text=No+Cover';
+    document.getElementById('modal-book-cover').style.backgroundImage = `url('${coverUrl}')`;
+    
+    // Availability status
+    const availabilityElement = document.getElementById('modal-book-availability');
+    const availableCopies = parseInt(book.available_copies) || 0;
+    const totalCopies = parseInt(book.total_copies) || 0;
+    
+    if (availableCopies > 0) {
+        availabilityElement.textContent = `Available (${availableCopies}/${totalCopies} copies)`;
+        availabilityElement.className = 'book-availability available';
+        document.getElementById('reserve-book-btn').disabled = false;
+        document.getElementById('reserve-book-btn').textContent = 'Reserve Book';
+    } else {
+        availabilityElement.textContent = 'Currently Unavailable';
+        availabilityElement.className = 'book-availability unavailable';
+        document.getElementById('reserve-book-btn').disabled = true;
+        document.getElementById('reserve-book-btn').textContent = 'Not Available';
+    }
+    
+    // Check if user has already reserved this book
+    if (book.reservation_status) {
+        document.getElementById('reserve-book-btn').disabled = true;
+        document.getElementById('reserve-book-btn').textContent = 'Already Reserved';
+        
+        if (book.reservation_status === 'pending') {
+            availabilityElement.textContent = 'Reserved (Pending admin approval)';
+            availabilityElement.className = 'book-availability pending';
+        } else if (book.reservation_status === 'fulfilled') {
+            availabilityElement.textContent = 'Reserved (Ready for pickup)';
+            availabilityElement.className = 'book-availability fulfilled';
+        }
+    }
+    
+    // Additional details
+    document.getElementById('modal-book-shelf').textContent = book.shelf_location || 'Not specified';
+    document.getElementById('modal-book-description').textContent = book.description || 'No description available.';
+    document.getElementById('modal-book-copies').textContent = totalCopies;
+    
+    // Book ratings (if available)
+    if (book.average_rating) {
+        document.getElementById('modal-book-rating').textContent = book.average_rating;
+    }
+    
+    // Book reviews
+    loadBookReviews(book.book_id);
+}
+
+function loadBookReviews(bookId) {
+    // Just use dummy reviews directly without trying to fetch real ones
+    const reviewsList = document.getElementById('book-reviews-list');
+    reviewsList.innerHTML = getDummyReviews();
+    
+    // Update the reviews count in the stats
+    document.getElementById('modal-book-reviews-count').textContent = '3';
+}
+
+function getStarRating(rating) {
+    rating = parseFloat(rating) || 0;
+    let stars = '';
+    
+    // Full stars
+    for (let i = 1; i <= Math.floor(rating); i++) {
+        stars += '★';
+    }
+    
+    // Half star
+    if (rating % 1 >= 0.5) {
+        stars += '½';
+    }
+    
+    // Empty stars
+    for (let i = Math.ceil(rating); i < 5; i++) {
+        stars += '☆';
+    }
+    
+    return stars;
+}
+// Close book details modal
+function closeBookModal() {
+    document.getElementById('book-details-modal').style.display = 'none';
+    document.body.style.overflow = 'auto'; // Restore body scrolling
+}
+
+// Add "Reserve Book" button functionality
+document.addEventListener('click', function(event) {
+    // Check if clicked element is the reserve button
+    if (event.target && event.target.id === 'reserve-book-btn') {
+        const user = JSON.parse(localStorage.getItem('libraryUser'));
+        if (!user) {
+            alert('Please log in to reserve books.');
+            closeBookModal();
+            window.location.href = 'user/login.html';
+            return;
+        }
+        
+        // Get the book ID from the modal
+        const bookId = document.querySelector('#book-details-modal').dataset.bookId;
+        
+        // Debug information
+        console.log('Sending reservation data:', {
+            book_id: bookId,
+            user_id: user.id
+        });
+        
+        // Show loading state
+        event.target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        event.target.disabled = true;
+        
+        // Make API call to reserve the book
+        fetch('../Backend/user/reserve_book.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                book_id: bookId,
+                user_id: user.id
+            })
+        })
+        .then(response => response.text())
+        .then(text => {
+            console.log('Raw server response:', text);
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Failed to parse response as JSON:', e);
+                throw new Error('Invalid server response');
+            }
+        })
+        .then(data => {
+            if (data.success) {
+                event.target.innerHTML = '<i class="fas fa-check"></i> Book Reserved!';
+                
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.className = 'reservation-success';
+                successMsg.innerHTML = `
+                    <p>${data.message}</p>
+                    <p>Reservation expires on: <strong>${new Date(data.expiry_date).toLocaleDateString()}</strong></p>
+                    <p>You can view your reservation in the <a href="./user/reservation_status.php">Reservation Status</a> page</p>
+                `;
+                
+                // Insert message below reserve button
+                const bookAction = document.querySelector('.book-action');
+                bookAction.appendChild(successMsg);
+                
+                // Disable the button permanently
+                event.target.disabled = true;
+                
+                // Close modal after a delay
+                setTimeout(() => {
+                    closeBookModal();
+                }, 5000);
+            } else if (data.error === 'already_reserved') {
+                event.target.innerHTML = 'Already Reserved';
+                event.target.disabled = true;
+                alert(data.message || 'You have already reserved this book.');
+            } else {
+                event.target.innerHTML = 'Reserve Book';
+                event.target.disabled = false;
+                alert(data.message || 'An error occurred while reserving the book.');
+            }
+        })
+        .catch(error => {
+            console.error('Error reserving book:', error);
+            event.target.innerHTML = 'Reserve Book';
+            event.target.disabled = false;
+            alert('An error occurred. Please try again later.');
+        });
+    }
+});
+
+// Helper functions for generating random book details
+function generateRandomISBN() {
+    return '978-' + Math.floor(Math.random() * 10) + '-' + 
+           Math.floor(Math.random() * 1000000) + '-' + 
+           Math.floor(Math.random() * 100) + '-' + 
+           Math.floor(Math.random() * 10);
+}
+
+function getRandomCategory() {
+    const categories = ['Fiction', 'Science Fiction', 'Mystery', 'Romance', 'Biography', 'History', 'Self-Help', 'Computer Science', 'Philosophy', 'Poetry'];
+    return categories[Math.floor(Math.random() * categories.length)];
+}
+
+function getRandomShelfLocation() {
+    const sections = ['A', 'B', 'C', 'D', 'E'];
+    const row = Math.floor(Math.random() * 10) + 1;
+    const shelf = Math.floor(Math.random() * 5) + 1;
+    return sections[Math.floor(Math.random() * sections.length)] + row + '-S' + shelf;
+}
+
+function getRandomDescription() {
+    const descriptions = [
+        "This captivating book takes readers on a journey through time and space, exploring the profound connections between human existence and the cosmos. Through eloquent prose and compelling storytelling, the author weaves together scientific discovery with philosophical inquiry.",
+        
+        "A gripping narrative that delves into the complexities of human relationships against the backdrop of historical events. The characters are richly developed, each with their own motivations and flaws, making them remarkably relatable despite the extraordinary circumstances they face.",
+        
+        "This thought-provoking work challenges conventional wisdom and offers fresh perspectives on age-old questions. The author's meticulous research and clear explanations make difficult concepts accessible to readers from all backgrounds.",
+        
+        "An enchanting story that blends elements of fantasy with real-world themes, creating a world that feels both magical and familiar. The pacing is masterful, with moments of intense action balanced by quieter, more reflective passages.",
+        
+        "This comprehensive guide provides practical advice backed by scientific research. Whether you're a beginner or have years of experience, you'll find valuable insights and techniques that can be immediately applied to improve your results."
+    ];
+    return descriptions[Math.floor(Math.random() * descriptions.length)];
+}
+
+function getDummyReviews() {
+    const reviewTemplate = `
+    <div class="review">
+        <div class="review-header">
+            <span class="reviewer-name">John Doe</span>
+            <span class="review-date">March 15, 2023</span>
+        </div>
+        <div class="review-rating">★★★★☆</div>
+        <div class="review-text">
+            I found this book to be incredibly insightful and well-written. The author has a unique way of presenting complex ideas in an accessible manner. Highly recommended for anyone interested in this subject.
+        </div>
+    </div>
+    <div class="review">
+        <div class="review-header">
+            <span class="reviewer-name">Jane Smith</span>
+            <span class="review-date">February 3, 2023</span>
+        </div>
+        <div class="review-rating">★★★★★</div>
+        <div class="review-text">
+            This is one of the best books I've read this year. The characters are relatable, the plot is engaging, and I couldn't put it down. The ending was particularly satisfying and left me wanting more.
+        </div>
+    </div>
+    <div class="review">
+        <div class="review-header">
+            <span class="reviewer-name">Robert Johnson</span>
+            <span class="review-date">January 12, 2023</span>
+        </div>
+        <div class="review-rating">★★★☆☆</div>
+        <div class="review-text">
+            While the book has some interesting concepts, I found the middle section to drag a bit. However, the author's writing style is engaging and the conclusion brought everything together nicely.
+        </div>
+    </div>
+    `;
+    
+    return reviewTemplate;
+}
+
+    // Call loadRecommendedBooks when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        updateUI();
+        loadRecommendedBooks();
+    });
+    </script>
+    </body>
+</html>
