@@ -1,0 +1,14 @@
+Request received: {"name":"John Doe","email":"john@test.com","subject":"Update my membership","message":"Please Update","type":"support","user_id":22}
+Decoded data: Array
+(
+    [name] => John Doe
+    [email] => john@test.com
+    [subject] => Update my membership
+    [message] => Please Update
+    [type] => support
+    [user_id] => 22
+)
+
+2025-05-11 21:13:52 Request: {"name":"John Doe","email":"john@test.com","subject":"Update my membership","message":"Please Update","type":"support","user_id":22}
+2025-05-11 22:14:35 Request: {"name":"John Doe","email":"john@test.com","subject":"Test","message":"Test msg","type":"feedback","user_id":22}
+2025-05-13 16:10:38 Request: {"name":"John Doe","email":"john@test.com","subject":"Update my membership","message":"random txt","type":"feedback","user_id":22}

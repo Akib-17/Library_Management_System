@@ -1,0 +1,98 @@
+{"book_id":"3"}
+Decoded data: Array
+(
+    [book_id] => 3
+)
+
+{"book_id":"3","user_id":22}
+Decoded data: Array
+(
+    [book_id] => 3
+    [user_id] => 22
+)
+
+Working with book_id: 3, user_id: 22
+Member data: Array
+(
+    [member_id] => 7
+)
+
+{"book_id":"4","user_id":22}
+Decoded data: Array
+(
+    [book_id] => 4
+    [user_id] => 22
+)
+
+Working with book_id: 4, user_id: 22
+Member data: Array
+(
+    [member_id] => 7
+)
+
+{"book_id":"5","user_id":22}
+Decoded data: Array
+(
+    [book_id] => 5
+    [user_id] => 22
+)
+
+Working with book_id: 5, user_id: 22
+Member data: Array
+(
+    [member_id] => 7
+)
+
+{"book_id":"6","user_id":22}
+Decoded data: Array
+(
+    [book_id] => 6
+    [user_id] => 22
+)
+
+Working with book_id: 6, user_id: 22
+Member data: Array
+(
+    [member_id] => 7
+)
+
+{"book_id":"3","user_id":22}
+Decoded data: Array
+(
+    [book_id] => 3
+    [user_id] => 22
+)
+
+Working with book_id: 3, user_id: 22
+Member data: Array
+(
+    [member_id] => 7
+)
+
+{"book_id":"4","user_id":22}
+Decoded data: Array
+(
+    [book_id] => 4
+    [user_id] => 22
+)
+
+Working with book_id: 4, user_id: 22
+Member data: Array
+(
+    [member_id] => 7
+)
+
+Error: This book is currently issued to another member and cannot be reserved
+{"book_id":"3","user_id":22}
+Decoded data: Array
+(
+    [book_id] => 3
+    [user_id] => 22
+)
+
+Working with book_id: 3, user_id: 22
+Member data: Array
+(
+    [member_id] => 7
+)
+
